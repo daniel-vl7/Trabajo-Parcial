@@ -24,10 +24,7 @@ int main()
 
     Hombre* h;
     h = new Hombre();
-    //Console::SetCursorPosition(1, 29); cout << " vidas";
-    //Console::SetCursorPosition(1, 1); cout << " vidas";
-    //Console::SetCursorPosition(114, 1); cout << " vidas";
-    //Console::SetCursorPosition(114, 29); cout << " vidas";//114 por que le size de vidas es 5 por lo tanto sobrepasa el limite de la consola y se sobre escribe en la sgte linea
+    //114 por que le size de vidas es 5 por lo tanto sobrepasa el limite de la consola y se sobre escribe en la sgte linea
 
     while (1)
     {
@@ -35,16 +32,21 @@ int main()
 
         c->EraseAll();
 
-       
+        c->AgregarAvion();
+        
+        //dentro de collision?
+        c->AgregarMisil(); //usar con sleep()?
+        c->AgregarBonus();
+        
+
         if (_kbhit()) {
             key = _getch();
             key = toupper(key);
-            a->Move(key);
+            //c->getAvion()->Move(key); error!
         }
 
-        h->MoveHombre();
-      
-        m->Move();
+
+        c->MoveAll(); // auto movement (misil & hombre)
         
         c->DrawAll();
 

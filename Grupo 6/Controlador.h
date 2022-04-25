@@ -1,4 +1,5 @@
 #pragma once
+
 #include <vector>
 #include "Misil.h"
 #include "Avion.h"
@@ -9,16 +10,20 @@ class Controlador
 {
 private:
 
+	Hombre* h;
+	
 	vector<Avion*> aviones;
+	//vector avion con 4 objts 
 	vector<Misil*> misiles;
 	vector<Bonus*> almacen;
-	Hombre* h;
+	
 	//int almacen;
 
 public:
 	Controlador() {
 		h = new Hombre();
-		//aviones.assign(4, new Avion()); buscar solucion para agregar objetos de las clases avion misil (cada cierto tiempo) almacen 
+		
+		// buscar solucion para agregar objetos de las clases avion misil (cada cierto tiempo) almacen 
 		// que no sobrepase un tamaño de arreglo establecido
 		//misiles.assign(20, new Misil());
 		//almacen.assign(10, new Bonus());
@@ -30,7 +35,10 @@ public:
 	//agregar misiles
 	void AgregarMisil() {
 		//for i in range 20
-		misiles.push_back(new Misil());
+		for (int i = 0; i < 20; i++)
+		{
+			misiles.push_back(new Misil());
+		}
 		//_sleep() agregación aleatoria
 	}
 
@@ -43,7 +51,10 @@ public:
 
 	//agregar bonus
 	void AgregarBonus() {
-		almacen.push_back(new Bonus());
+		for (int i = 0; i < 10; i++)
+		{
+			almacen.push_back(new Bonus());
+		}
 		//_sleep() agregación aleatoria
 
 	}
@@ -85,31 +96,46 @@ public:
 		//{
 			//arrBonus[i]->Erase(); EVALUAR SI ES NECESARIA ESTE FOR
 		//}
-		h->EraseHombre();
+		h->Erase();
 
 	}
+	//Move - automatic movement
+	void MoveAll() {
+		for (int i = 0; i < misiles.size(); i++)
+		{
+			misiles[i]->Move();
+		}
+		h->Move();
+	}
+
+
 	//Draw
 	void DrawAll() {//  a = argumento aviones[i] 
 
 		for (int i = 0; i < misiles.size(); i++)
 		{
+			_sleep(400);
 			misiles[i]->Draw();
 		}
 		for (int i = 0; i < aviones.size(); i++)
 		{
 			aviones[i]->Draw();
 		}
-		h->DrawHombre();
+		h->Draw();
 		//Console::ForegroundColor = ConsoleColor::Red;
 		//Console::SetCursorPosition(1, 1);
 		//for (int i = 0; i < a->getVidas(); i++) {
 		//	cout << char(3) << " ";
 		//}
 
-		Console::SetCursorPosition(108, 19);
+		Console::SetCursorPosition(100, 19);
 		for (int i = 0; i < almacen.size(); i++)
 		{
+			_sleep(600);
 			cout << char(254) << endl;
 		}
 	}	
+
+	
+
 };
