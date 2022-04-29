@@ -26,9 +26,8 @@ public:
 		ArrBonus = new Bonus * [10];
 		// buscar solucion para agregar objetos de las clases avion misil (cada cierto tiempo) almacen 
 		// que no sobrepase un tamaño de arreglo establecido
-		//misiles.assign(20, new Misil());
-		//almacen.assign(10, new Bonus());
-		//almacen = 0; //agregar en parte inferior derecha
+		
+		//almacen = 0; //agregar en parte inferior derecha 
 		lenAvion = 4;
 		lenMisil = 25;
 		lenBonus = 10;
@@ -82,7 +81,7 @@ public:
 		{
 			if (ArrMisil[i]->getVisible() == false)
 			{
-				//delete  misil in position i
+				//delete  misil in position i EliminarMisil();
 				ArrAvion[indice]->ReducirVida();
 			}
 		}
@@ -111,18 +110,20 @@ public:
 			MoveMisil();//array for con sleep? //ADVA
 			DrawMisil();//array //ADVA
 
-			IntersecaMisil(); pimer for para el arr avion, segundo para arr misiles for anidados //INTE
+			IntersecaMisil(); pimerO for para arr misiles  //INTE
+
 			EliminarMisil();//borrar del array if intersecta misil true;  //INTE
+
 			EliminarVidas(); //ArrAvio[i].reducir vida(); //INTE
 			IntersecaBonus(); //INTE
 			BorraBonus();//if intersecta true; //INTE
 			EliminaAvion(); //if ArrAvion[i]. vidas == 0 
-			AgregarAvion();//if ArrAvion[i]. vidas == 0 {i++;} ¿? puede ser pa? //INTE
+			AgregarAvion();//if ArrAvion[i]. vidas == 0 {i++;} ? //INTE
 		*/
 		}
 		
 	}
-
+	//CODIGO A PARIR DE AQUI: IGNORAR IGNORAR IGNORAR IGNORAR
 	/*
 	//agregar misiles
 	void AgregarMisil() {
