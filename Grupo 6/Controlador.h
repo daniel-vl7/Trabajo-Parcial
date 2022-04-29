@@ -1,6 +1,5 @@
 #pragma once
 
-#include <vector>
 #include "Misil.h"
 #include "Avion.h"
 #include "Bonus.h"
@@ -11,27 +10,120 @@ class Controlador
 private:
 
 	Hombre* h;
+	Avion** ArrAvion;
+	Avion* ObjAvion;
+	Misil** ArrMisil;
+	Misil* ObjMisil;
+	Bonus** ArrBonus;
+	Bonus* ObjBonus;
+	int lenAvion, lenMisil, lenBonus;
 	
-	vector<Avion*> aviones;
-	//vector avion con 4 objts 
-	vector<Misil*> misiles;
-	vector<Bonus*> almacen;
-	
-	//int almacen;
-
 public:
 	Controlador() {
 		h = new Hombre();
-		
+		ArrAvion = new Avion * [4];
+		ArrMisil = new Misil * [25];
+		ArrBonus = new Bonus * [10];
 		// buscar solucion para agregar objetos de las clases avion misil (cada cierto tiempo) almacen 
 		// que no sobrepase un tamaño de arreglo establecido
 		//misiles.assign(20, new Misil());
 		//almacen.assign(10, new Bonus());
 		//almacen = 0; //agregar en parte inferior derecha
+		lenAvion = 4;
+		lenMisil = 25;
+		lenBonus = 10;
+
+		for (int i = 0; i < 4; i++)
+		{
+			ObjAvion = new Avion();
+			ArrAvion[i] = ObjAvion;
+		}
+		
+		for (int i = 0; i < 25; i++)
+		{
+			ObjMisil = new Misil();
+			ArrMisil[i] = ObjMisil;
+		}
+		for (int i = 0; i < 10; i++)
+		{
+			ObjBonus = new Bonus();
+			ArrBonus[i] = ObjBonus;
+		}
 	}
+	
 	~Controlador(){}
 
+	void MostrarVidas(int indice) {
 
+		Console::SetCursorPosition(1,1);
+		Console::ForegroundColor = ConsoleColor::White;
+		cout <<"Vidas de la nave:  ";
+		for (int i = 0; i < ArrAvion[indice]->getVidas(); i++)
+		{
+			Console::ForegroundColor = ConsoleColor::Red;
+			cout << char(3) << " ";
+		}
+	}
+
+	void InterseccionBonus(){}
+
+
+	void ColisionMisil(int indice){
+
+		for (int i = 0; i < lenMisil; i++)
+		{
+			if (ArrAvion[indice]->getRectangle().IntersectsWith(ArrMisil[i]->getRectangle()))
+			{
+				ArrMisil[i]->setVisible(false);
+			}
+		}
+
+		for (int i = 0; i < lenMisil; i++)
+		{
+			if (ArrMisil[i]->getVisible() == false)
+			{
+				//delete  misil in position i
+				ArrAvion[indice]->ReducirVida();
+			}
+		}
+		
+	}
+
+	void inicio() {
+
+		short indice = 0;
+		short current = 0;
+
+		while (1)
+		{
+			/*
+			MostrarVidas();  //INTERMEDIO (INTE)
+			MostrarBonus(); //INTE
+
+			BorrarTodo(); //INTE
+
+			if (_kbhit()) {
+				key = _getch();
+				key = toupper(key);
+				ArrAvion[i + current]->Move(key);// current sirve? //ADVA
+			}
+
+			MoveMisil();//array for con sleep? //ADVA
+			DrawMisil();//array //ADVA
+
+			IntersecaMisil(); pimer for para el arr avion, segundo para arr misiles for anidados //INTE
+			EliminarMisil();//borrar del array if intersecta misil true;  //INTE
+			EliminarVidas(); //ArrAvio[i].reducir vida(); //INTE
+			IntersecaBonus(); //INTE
+			BorraBonus();//if intersecta true; //INTE
+			EliminaAvion(); //if ArrAvion[i]. vidas == 0 
+			AgregarAvion();//if ArrAvion[i]. vidas == 0 {i++;} ¿? puede ser pa? //INTE
+		*/
+		}
+		
+	}
+
+	/*
 	//agregar misiles
 	void AgregarMisil() {
 		//for i in range 20
@@ -59,8 +151,7 @@ public:
 
 	}
 
-	//adecuar funciones para trabajarlas con arreglos ||  lineas 28 al 55 
-
+	//adecuar funciones para trabajarlas con arreglos ||  lineas 28 al 00
 	void RecolectaBonus(Avion* newa, Bonus* newb) {
 		if (newa->getRectangle().IntersectsWith(newb->getRectangle())) {
 			almacen.push_back(new Bonus());
@@ -137,5 +228,5 @@ public:
 	}	
 
 	
-
+	*/
 };

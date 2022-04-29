@@ -30,28 +30,40 @@ int main()
     {
         Console::CursorVisible = false;
 
-        c->EraseAll();
+        //c->EraseAll();
 
-        c->AgregarAvion();
+        //c->AgregarAvion();
         
         //dentro de collision?
-        c->AgregarMisil(); //usar con sleep()?
-        c->AgregarBonus();
-        
+        //c->AgregarMisil(); //usar con sleep()?
+        //c->AgregarBonus();
+        c->MostrarVidas(1);
+
+        a->Erase();
+        //h->Erase();
+        b->Erase();
+        m->Erase();
 
         if (_kbhit()) {
             key = _getch();
             key = toupper(key);
+            a->Move(key);
             //c->getAvion()->Move(key); error!
         }
+        m->Move();
+        //h->Move();
+        b->Draw();
+        //h->Draw();
+        a->Draw();
+        m->Draw();
 
 
-        c->MoveAll(); // auto movement (misil & hombre)
+        //c->MoveAll(); // auto movement (misil & hombre)
         
-        c->DrawAll();
+        //c->DrawAll();
 
-        c->RecolectaBonus(a,b);
-        c->BonusRecolectado(b);
+        //c->RecolectaBonus(a,b);
+        //c->BonusRecolectado(b);
       
 
 

@@ -73,6 +73,10 @@ public:
 		Console::SetCursorPosition(x, y + 2); cout << char(254) << "-----";
 	}
 
+	void ReducirVida() {
+		vidas -= 1;
+	}
+
 	Rectangle getRectangle() {
 		return Rectangle(x, y, width, height);
 	}
