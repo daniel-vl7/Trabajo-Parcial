@@ -23,7 +23,7 @@ public:
 		dy = 2;
 		height = 3;
 		width = 7;
-		vidas = 4; // if vidas = 0 - visible = false// new avion en pantalla
+		vidas = 4; 
 		visible = true;
 	}
 	~Avion(){}
@@ -73,8 +73,8 @@ public:
 		Console::SetCursorPosition(x, y + 2); cout << char(254) << "-----";
 	}
 
-	void ReducirVida() {
-		vidas -= 1;
+	void setVida(int value) {
+		vidas += value;
 	}
 
 	Rectangle getRectangle() {

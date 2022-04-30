@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include "Avion.h"
 
 using namespace std;
 
@@ -16,6 +17,7 @@ public:
 		dx = 1;
 		visible = true;
 	}
+	void setX(int value) { x = value; } // h.setX(ArrAvion[i].getX());
 
 	//erase-move-draw;
 	void Erase() {

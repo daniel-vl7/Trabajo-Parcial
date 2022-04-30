@@ -16,21 +16,22 @@ private:
 	Misil* ObjMisil;
 	Bonus** ArrBonus;
 	Bonus* ObjBonus;
+	int Almacen;
+	bool Lleno;
 	int lenAvion, lenMisil, lenBonus;
+	
 	
 public:
 	Controlador() {
 		h = new Hombre();
 		ArrAvion = new Avion * [4];
 		ArrMisil = new Misil * [25];
-		ArrBonus = new Bonus * [10];
-		// buscar solucion para agregar objetos de las clases avion misil (cada cierto tiempo) almacen 
-		// que no sobrepase un tamaño de arreglo establecido
-		
-		//almacen = 0; //agregar en parte inferior derecha 
+		ArrBonus = new Bonus * [10]; 
 		lenAvion = 4;
 		lenMisil = 25;
 		lenBonus = 10;
+		Almacen = 0;
+		Lleno = false;
 
 		for (int i = 0; i < 4; i++)
 		{
@@ -52,6 +53,8 @@ public:
 	
 	~Controlador(){}
 
+	void setAlmacen(int value) { Almacen += value; }
+
 	void MostrarVidas(int indice) {
 
 		Console::SetCursorPosition(1,1);
@@ -63,10 +66,111 @@ public:
 			cout << char(3) << " ";
 		}
 	}
+	void MostrarAlmacen() {
+		Console::SetCursorPosition(105, 29);
+		Console::ForegroundColor = ConsoleColor::White;
+		cout << "Almacen: " << Almacen;
+	}
 
-	void InterseccionBonus(){}
+	void EraseMisiles() {
 
+		for (int i = 0; i < lenMisil; i++)
+		{
+			ArrMisil[i]->Erase();
+		}
+	}
 
+	void MoveMisiles() {
+
+		for (int i = 0; i < lenMisil; i++)
+		{
+			ArrMisil[i]->Move();
+		}
+	}
+
+	void DrawMisiles() {
+
+		for (int i = 0; i < lenMisil; i++)
+		{	
+			ArrMisil[i]->Draw();
+			_sleep(10);
+		}
+	}
+
+	void DrawBonus() {
+
+		for (int i = 0; i < lenBonus; i++)
+		{
+			ArrBonus[i]->Draw();
+			_sleep(7);
+		}
+	}
+
+	void EliminarBonusPosicion(int posicion) {
+
+		Bonus** aux;
+		aux = new Bonus * [lenBonus - 1];
+
+		for (int i = 0; i < posicion; i++)
+		{
+			aux[i] = ArrBonus[i];
+		}
+
+		for (int i = posicion; i < lenBonus; i++)
+		{
+			aux[i] = ArrBonus[i + 1];
+		}
+
+		lenBonus--;
+		ArrBonus = aux;
+
+	}
+	void ColisionBonus(int indice) {
+
+		for (int i = 0; i < lenBonus; i++)
+		{
+			if (ArrAvion[indice]->getRectangle().IntersectsWith(ArrBonus[i]->getRectangle()))
+			{
+				ArrBonus[i]->setVisible(false);
+				setAlmacen(1);
+			}
+		}
+
+		for (int i = 0; i < lenBonus; i++)
+		{
+			if (ArrBonus[i]->getVisible()==false)
+			{
+				EliminarBonusPosicion(i);
+			}
+		}
+	}
+
+	void RecolectaHombre(int indice) {
+		if (Almacen == 6)
+		{
+			Lleno = true;
+		}
+	}
+
+	void EliminarMisilPosicion(int posicion) {
+
+		Misil** aux;
+		aux = new Misil * [lenMisil - 1];
+
+		for (int i = 0; i < posicion; i++)
+		{
+			aux[i] = ArrMisil[i];
+		}
+
+		for (int i = posicion; i < lenMisil; i++)
+		{
+			aux[i] = ArrMisil[i + 1];
+		}
+
+		lenMisil--;
+		ArrMisil = aux;
+
+	}
 	void ColisionMisil(int indice){
 
 		for (int i = 0; i < lenMisil; i++)
@@ -74,6 +178,7 @@ public:
 			if (ArrAvion[indice]->getRectangle().IntersectsWith(ArrMisil[i]->getRectangle()))
 			{
 				ArrMisil[i]->setVisible(false);
+				setAlmacen(-1);
 			}
 		}
 
@@ -81,153 +186,98 @@ public:
 		{
 			if (ArrMisil[i]->getVisible() == false)
 			{
-				//delete  misil in position i EliminarMisil();
-				ArrAvion[indice]->ReducirVida();
+				EliminarMisilPosicion(i);
+				ArrAvion[indice]->setVida(-1);
 			}
 		}
-		
+	}
+
+	void EliminarMisil() {
+
+		for (int i = 0; i <lenMisil ; i++)
+		{
+			if (ArrMisil[i]->getX() <= 2)
+			{
+				ArrMisil[i]->setVisible(false);
+			}
+		}
+		for (int i = 0; i < lenMisil; i++)
+		{
+			if (ArrMisil[i]->getVisible() == false)
+			{
+				EliminarMisilPosicion(i);
+			}
+		}
+	}
+
+	void EliminarAvion(int indice) {
+
+		if (ArrAvion[indice]->getVidas()==0)
+		{
+			Avion** aux;
+			aux = new Avion * [lenAvion - 1];
+
+			for (int i = 1; i < lenAvion; i++)
+			{
+				aux[i] = ArrAvion[i];
+			}
+
+			lenAvion--;
+			ArrAvion = aux;
+		}
+		//si se elimina avion del array el indice 0 pasa al siguiente avion
 	}
 
 	void inicio() {
 
-		short indice = 0;
-		short current = 0;
+		int indice = 0;
+		char key;
 
 		while (1)
 		{
-			/*
-			MostrarVidas();  //INTERMEDIO (INTE)
-			MostrarBonus(); //INTE
+			
+			//ORDENADO:
+			Console::CursorVisible = false;
 
-			BorrarTodo(); //INTE
+			MostrarVidas(indice); 
+			MostrarAlmacen(); 
+
+			ArrAvion[indice]->Erase();			
+			EraseMisiles();
 
 			if (_kbhit()) {
 				key = _getch();
 				key = toupper(key);
-				ArrAvion[i + current]->Move(key);// current sirve? //ADVA
+				ArrAvion[indice]->Move(key);
 			}
+			MoveMisiles();
 
-			MoveMisil();//array for con sleep? //ADVA
-			DrawMisil();//array //ADVA
+			ArrAvion[indice]->Draw();
 
-			IntersecaMisil(); pimerO for para arr misiles  //INTE
+			DrawMisiles();
+			DrawBonus();
 
-			EliminarMisil();//borrar del array if intersecta misil true;  //INTE
+			ColisionBonus(indice);
+			RecolectaHombre(indice); 
 
-			EliminarVidas(); //ArrAvio[i].reducir vida(); //INTE
-			IntersecaBonus(); //INTE
-			BorraBonus();//if intersecta true; //INTE
-			EliminaAvion(); //if ArrAvion[i]. vidas == 0 
-			AgregarAvion();//if ArrAvion[i]. vidas == 0 {i++;} ? //INTE
-		*/
+			/*if (Lleno) {
+				h->setX(ArrAvion[indice]->getX());
+				//podria intentarse for de 10 pasos del hombre
+				h->Erase();
+				h->Move();
+				h->Draw();
+			}*/
+			
+						
+			ColisionMisil(indice);
+			EliminarAvion(indice);
+
+			EliminarMisil(); 
+			
+			Almacen = 0;
+			
+			_sleep(100);
 		}
 		
 	}
-	//CODIGO A PARIR DE AQUI: IGNORAR IGNORAR IGNORAR IGNORAR
-	/*
-	//agregar misiles
-	void AgregarMisil() {
-		//for i in range 20
-		for (int i = 0; i < 20; i++)
-		{
-			misiles.push_back(new Misil());
-		}
-		//_sleep() agregación aleatoria
-	}
-
-	//agregar aviones
-	void AgregarAvion() {
-		//for i in range 4
-		aviones.push_back(new Avion());
-		// when live is 0;
-	}
-
-	//agregar bonus
-	void AgregarBonus() {
-		for (int i = 0; i < 10; i++)
-		{
-			almacen.push_back(new Bonus());
-		}
-		//_sleep() agregación aleatoria
-
-	}
-
-	//adecuar funciones para trabajarlas con arreglos ||  lineas 28 al 00
-	void RecolectaBonus(Avion* newa, Bonus* newb) {
-		if (newa->getRectangle().IntersectsWith(newb->getRectangle())) {
-			almacen.push_back(new Bonus());
-			newb->setVisible(false);
-		}
-	}
-	void BonusRecolectado(Bonus* newb) {
-		if (newb->getVisible() == false) {
-			//for testing:
-			//almacen *= 1; no sirve
-		}
-	}
-
-	void HombreRecolecta(){}//hombre aparece y recolecta almacen de 6 items
-	void ReduceAlmacen(){}//choque con misil quita 1 item de almacen; cambio visible
-	void EliminaMisil(){}//pasado y = 2 el misil se borra;
-
-	void ReduceVida(){}// choque de avion con misil;
-	void EliminaAvion(){}//vidas = 0, debe aparecer otro avion;
-
-	//Erase 
-	void EraseAll() {
-
-		for (int i = 0; i < misiles.size(); i++)
-		{
-			misiles[i]->Erase();
-		}
-		for (int i = 0; i < aviones.size(); i++)
-		{
-			aviones[i]->Erase();
-		}
-		//for (int i = 0; i < arrBonus.size(); i++)
-		//{
-			//arrBonus[i]->Erase(); EVALUAR SI ES NECESARIA ESTE FOR
-		//}
-		h->Erase();
-
-	}
-	//Move - automatic movement
-	void MoveAll() {
-		for (int i = 0; i < misiles.size(); i++)
-		{
-			misiles[i]->Move();
-		}
-		h->Move();
-	}
-
-
-	//Draw
-	void DrawAll() {//  a = argumento aviones[i] 
-
-		for (int i = 0; i < misiles.size(); i++)
-		{
-			_sleep(400);
-			misiles[i]->Draw();
-		}
-		for (int i = 0; i < aviones.size(); i++)
-		{
-			aviones[i]->Draw();
-		}
-		h->Draw();
-		//Console::ForegroundColor = ConsoleColor::Red;
-		//Console::SetCursorPosition(1, 1);
-		//for (int i = 0; i < a->getVidas(); i++) {
-		//	cout << char(3) << " ";
-		//}
-
-		Console::SetCursorPosition(100, 19);
-		for (int i = 0; i < almacen.size(); i++)
-		{
-			_sleep(600);
-			cout << char(254) << endl;
-		}
-	}	
-
-	
-	*/
 };

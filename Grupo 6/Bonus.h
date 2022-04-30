@@ -32,11 +32,6 @@ public:
 
 	//erase - draw
 
-	//EraseBonus no tiene uso, observacion
-	void Erase() {
-		Console::SetCursorPosition(x, y); cout << " ";
-	}
-
 	void Draw() {
 		Console::ForegroundColor = ConsoleColor::Red;
 		Console::SetCursorPosition(x, y); cout << char(254);
